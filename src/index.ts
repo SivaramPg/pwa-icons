@@ -1,5 +1,3 @@
-#!/usr/bin/env bun
-
 import { program } from "commander";
 import * as p from "@clack/prompts";
 import chalk from "chalk";
@@ -36,7 +34,7 @@ program
   .option("-o, --output <path>", "Output directory (default: ./AppImages)")
   .option(
     "-p, --platforms <platforms>",
-    "Comma-separated platforms: ios,android,windows11 (default: all)"
+    "Comma-separated platforms: ios,android,windows11,favicon (default: ios,android,windows11)"
   )
   .option("--padding <value>", "Padding ratio 0-1 (default: 0.3)")
   .option(
@@ -133,6 +131,11 @@ async function main(options: CliOptions) {
           value: "windows11",
           label: "Windows 11",
           hint: "~80 icons (tiles, splash, variants)",
+        },
+        {
+          value: "favicon",
+          label: "Favicon",
+          hint: "6 files (ico, png, apple-touch-icon)",
         },
       ],
       initialValues: ["ios", "android", "windows11"],
@@ -275,7 +278,7 @@ async function main(options: CliOptions) {
     // Parse platforms
     if (options.platforms) {
       const requestedPlatforms = options.platforms.split(",").map((p) => p.trim());
-      const validPlatforms = ["ios", "android", "windows11"];
+      const validPlatforms = ["ios", "android", "windows11", "favicon"];
       const invalid = requestedPlatforms.filter((p) => !validPlatforms.includes(p));
       if (invalid.length > 0) {
         p.log.error(`Invalid platforms: ${invalid.join(", ")}`);

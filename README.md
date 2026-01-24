@@ -1,17 +1,18 @@
-# PWA Asset Generator
+# pwa-icons
 
-A fast, interactive CLI to generate PWA icons for **iOS**, **Android**, and **Windows 11** from a single source image.
+A fast, interactive CLI to generate PWA icons for **iOS**, **Android**, **Windows 11**, and **favicons** from a single source image.
 
 Built with [Bun](https://bun.sh), [Sharp](https://sharp.pixelplumbing.com/), and [@clack/prompts](https://github.com/natemoo-re/clack).
 
 ## Features
 
 - **Interactive prompts** — No need to remember flags
-- **112 icons** generated in under 1 second
+- **118 icons** generated in under 1 second
 - **Smart edge detection** — Samples border pixels for seamless backgrounds
 - **Multiple output formats** — PNG, WebP, AVIF, JPEG
 - **Optimization levels** — Balance quality vs file size
-- **Platform selection** — Generate only what you need
+- **Platform selection** — iOS, Android, Windows 11, Favicon
+- **Favicon generation** — Multi-size ICO + apple-touch-icon
 
 ## Quick Start
 
@@ -25,32 +26,31 @@ bun run start -i logo.png -o ./icons -y
 
 ## Installation
 
-### Prerequisites
+### From npm (recommended)
 
-- [Bun](https://bun.sh) v1.0.0 or later
+```bash
+# Use directly with npx
+npx pwa-icons
 
-### Setup
+# Or install globally
+npm install -g pwa-icons
+pwa-icons
+```
+
+### From source
+
+Prerequisites: [Bun](https://bun.sh) v1.0.0+ or [Node.js](https://nodejs.org) v18+
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/pwa-asset-generator.git
-cd pwa-asset-generator
+git clone https://github.com/SivaramPg/pwa-asset-generator-cli.git
+cd pwa-asset-generator-cli
 
 # Install dependencies
-bun install
+bun install  # or: npm install
 
 # Run
-bun run start
-```
-
-### Global Installation
-
-```bash
-# Link globally
-bun link
-
-# Now use from anywhere
-pwa-icons
+bun run start  # or: npm start
 ```
 
 ## Usage
@@ -93,7 +93,7 @@ bun run start \
 |------|-------------|---------|
 | `-i, --input <path>` | Source image path | (required in non-interactive) |
 | `-o, --output <path>` | Output directory | `./AppImages` |
-| `-p, --platforms <list>` | Comma-separated: `ios,android,windows11` | all |
+| `-p, --platforms <list>` | Comma-separated: `ios,android,windows11,favicon` | ios,android,windows11 |
 | `-f, --format <fmt>` | `png`, `jpg`, `webp`, `avif` | `png` |
 | `--padding <0-1>` | Padding ratio | `0.3` |
 | `-b, --background <color>` | `edge`, `transparent`, or hex color | `edge` |
@@ -189,6 +189,13 @@ AppImages/
 │   ├── Square44x44Logo.altform-unplated_targetsize-16.png
 │   ├── ...
 │   └── (80 icons total)
+├── favicon/
+│   ├── favicon.ico       # Multi-size (16, 32, 48)
+│   ├── favicon-16x16.png
+│   ├── favicon-32x32.png
+│   ├── favicon-48x48.png
+│   ├── favicon-192x192.png
+│   └── apple-touch-icon.png  # 180x180
 └── icons.json            # PWA manifest-ready
 ```
 
@@ -245,9 +252,20 @@ Covers: iPhone, iPad, App Store, Spotlight, Settings
 | Square44x44Logo.altform-unplated | 16-256 (15 sizes) | 15 |
 | Square44x44Logo.altform-lightunplated | 16-256 (15 sizes) | 15 |
 
+### Favicon (6 files)
+
+| File | Size | Purpose |
+|------|------|---------|
+| favicon.ico | 16, 32, 48 | Classic favicon (multi-size ICO) |
+| favicon-16x16.png | 16×16 | Modern browsers |
+| favicon-32x32.png | 32×32 | Modern browsers, HiDPI |
+| favicon-48x48.png | 48×48 | Windows site icons |
+| favicon-192x192.png | 192×192 | Android Chrome |
+| apple-touch-icon.png | 180×180 | iOS home screen |
+
 ## Performance
 
-- **112 icons** in **~0.6 seconds**
+- **118 icons** in **~0.7 seconds** (all platforms including favicon)
 - 10 concurrent operations via [p-limit](https://github.com/sindresorhus/p-limit)
 - Source image processed once, buffer reused
 - [Sharp](https://sharp.pixelplumbing.com/) (libvips) for native-speed processing
@@ -289,6 +307,12 @@ bun run build
 
 - [PWABuilder Image Generator](https://www.pwabuilder.com/imageGenerator)
 - [Vercel's add-skill CLI](https://github.com/vercel-labs/add-skill)
+
+## See Also
+
+If you need features like **iOS device-specific splash screens**, **dark mode splash screens**, **maskable icons**, or **HTML/CSS input**, check out [pwa-asset-generator](https://github.com/elegantapp/pwa-asset-generator) — it uses Puppeteer/Chromium for browser-based rendering.
+
+This package (`pwa-icons`) is a lightweight, faster alternative using Sharp/libvips for most common use cases.
 
 ## License
 

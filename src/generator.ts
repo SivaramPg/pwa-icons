@@ -1,11 +1,13 @@
 import sharp, { type Sharp, type PngOptions, type JpegOptions, type WebpOptions, type AvifOptions } from "sharp";
-import { mkdir } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import { join, extname } from "path";
 import pLimit from "p-limit";
 import { extractEdgeColor } from "./color";
 import { iosConfig } from "./platforms/ios";
 import { androidConfig } from "./platforms/android";
 import { windows11Config } from "./platforms/windows11";
+import { faviconConfig, ICO_SIZES } from "./platforms/favicon";
+import pngToIco from "png-to-ico";
 import type {
   GeneratorOptions,
   Platform,
@@ -22,6 +24,7 @@ const platformConfigs: Record<Platform, PlatformConfig> = {
   ios: iosConfig,
   android: androidConfig,
   windows11: windows11Config,
+  favicon: faviconConfig,
 };
 
 // Concurrency limit to prevent memory spikes
@@ -185,6 +188,30 @@ export async function generateIcons(
     )
   );
 
+  // Generate favicon.ico if favicon platform is selected
+  if (platforms.includes("favicon")) {
+    const faviconDir = join(outputPath, "favicon");
+    const icoPngBuffers: Buffer[] = [];
+
+    // Read the generated PNG files for ICO
+    for (const size of ICO_SIZES) {
+      const pngPath = join(faviconDir, `favicon-${size}x${size}.png`);
+      const pngBuffer = await sharp(pngPath).png().toBuffer();
+      icoPngBuffers.push(pngBuffer);
+    }
+
+    // Generate multi-size ICO
+    const icoBuffer = await pngToIco(icoPngBuffers);
+    const icoPath = join(faviconDir, "favicon.ico");
+    await writeFile(icoPath, icoBuffer);
+
+    // Add ICO to entries
+    iconEntries.push({
+      src: "favicon/favicon.ico",
+      sizes: "16x16 32x32 48x48",
+    });
+  }
+
   // Sort entries by platform folder and then by size
   iconEntries.sort((a, b) => {
     if (a.src < b.src) return -1;
@@ -195,7 +222,7 @@ export async function generateIcons(
   // Write icons.json manifest
   const manifest: IconsManifest = { icons: iconEntries };
   const manifestPath = join(outputPath, "icons.json");
-  await Bun.write(manifestPath, JSON.stringify(manifest, null, 2));
+  await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 
   return {
     totalIcons,

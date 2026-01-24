@@ -1,4 +1,4 @@
-export type Platform = "ios" | "android" | "windows11";
+export type Platform = "ios" | "android" | "windows11" | "favicon";
 export type OutputFormat = "png" | "jpg" | "webp" | "avif";
 export type OptimizationLevel = "none" | "light" | "heavy";
 

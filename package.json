@@ -1,32 +1,59 @@
 {
-  "name": "pwa-asset-generator",
+  "name": "pwa-icons",
   "version": "1.0.0",
-  "description": "Generate PWA icons for iOS, Android, and Windows 11 from a single source image",
-  "module": "src/index.ts",
+  "description": "Fast, interactive CLI to generate PWA icons for iOS, Android, Windows 11 and favicons from a single source image",
   "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
-    "pwa-asset-generator": "./src/index.ts",
-    "pwa-icons": "./src/index.ts"
+    "pwa-icons": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run --watch src/index.ts",
-    "build": "bun build src/index.ts --compile --outfile dist/pwa-asset-generator",
+    "build": "tsup",
+    "prepublishOnly": "bun run build",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "pwa",
+    "progressive-web-app",
     "icons",
     "asset-generator",
     "ios",
     "android",
     "windows11",
-    "cli"
+    "windows",
+    "cli",
+    "sharp",
+    "image",
+    "resize",
+    "favicon",
+    "ico",
+    "manifest",
+    "apple-touch-icon",
+    "splash-screen",
+    "web-app-manifest"
   ],
-  "author": "",
+  "author": "SivaramPg",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SivaramPg/pwa-asset-generator-cli.git"
+  },
+  "homepage": "https://github.com/SivaramPg/pwa-asset-generator-cli#readme",
+  "bugs": {
+    "url": "https://github.com/SivaramPg/pwa-asset-generator-cli/issues"
+  },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/node": "^22.0.0",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
   "dependencies": {
@@ -34,9 +61,10 @@
     "chalk": "^5.6.2",
     "commander": "^14.0.2",
     "p-limit": "^7.2.0",
+    "png-to-ico": "^3.0.1",
     "sharp": "^0.34.5"
   },
   "engines": {
-    "bun": ">=1.0.0"
+    "node": ">=18"
   }
 }
