@@ -1,0 +1,43 @@
+# PWA Asset Generator
+
+A CLI tool to generate PWA icons for iOS, Android, and Windows 11.
+
+## Commands
+
+```bash
+bun run start       # Run CLI interactively
+bun run start -i logo.png -y  # Non-interactive with flags
+bun run typecheck   # TypeScript check
+bun run build       # Compile to binary
+```
+
+## Architecture
+
+```
+src/
+  index.ts          # CLI entry point (@clack/prompts + commander)
+  generator.ts      # Icon generation logic (sharp + p-limit)
+  color.ts          # Edge color extraction
+  types.ts          # TypeScript types + constants
+  platforms/
+    ios.ts          # 26 icon sizes
+    android.ts      # 6 icon sizes
+    windows11.ts    # 80 icon variants
+```
+
+## Key Design Decisions
+
+1. **Edge detection over dominant color** — Samples 1px borders for natural background extension
+2. **Source buffer reuse** — Load once, generate 112 icons from same buffer
+3. **p-limit(10)** — Prevents memory spikes during parallel generation
+4. **Conditional transparency** — JPEG format hides "transparent" option in prompts
+
+## Testing
+
+```bash
+# Quick test
+bun run start -i logo.png -o test-output -p ios -y
+
+# Full test (all platforms)
+bun run start -i logo.png -o test-output -y
+```
