@@ -13,7 +13,7 @@ import {
   type OptimizationLevel,
 } from "./types";
 
-const version = "1.0.2";
+const version = "1.1.0";
 
 interface CliOptions {
   input?: string;
