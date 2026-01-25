@@ -43,8 +43,8 @@ Prerequisites: [Bun](https://bun.sh) v1.0.0+ or [Node.js](https://nodejs.org) v1
 
 ```bash
 # Clone the repo
-git clone https://github.com/SivaramPg/pwa-asset-generator-cli.git
-cd pwa-asset-generator-cli
+git clone https://github.com/SivaramPg/pwa-icons.git
+cd pwa-icons
 
 # Install dependencies
 bun install  # or: npm install

@@ -1,6 +1,6 @@
 {
   "name": "pwa-icons",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fast, interactive CLI to generate PWA icons for iOS, Android, Windows 11 and favicons from a single source image",
   "type": "module",
   "main": "dist/index.js",
@@ -44,11 +44,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SivaramPg/pwa-asset-generator-cli.git"
+    "url": "git+https://github.com/SivaramPg/pwa-icons.git"
   },
-  "homepage": "https://github.com/SivaramPg/pwa-asset-generator-cli#readme",
+  "homepage": "https://github.com/SivaramPg/pwa-icons#readme",
   "bugs": {
-    "url": "https://github.com/SivaramPg/pwa-asset-generator-cli/issues"
+    "url": "https://github.com/SivaramPg/pwa-icons/issues"
   },
   "devDependencies": {
     "@types/bun": "latest",
