@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeAll, afterEach, afterAll } from "bun:test";
+import { describe, it, expect, beforeAll, afterEach } from "bun:test";
 import { validateImage, generateIcons } from "../../src/generator";
-import { setupFixtures, FIXTURES, getTempOutputDir, cleanupFixtures } from "../setup";
+import { setupFixtures, FIXTURES, getTempOutputDir } from "../setup";
 import { existsSync } from "fs";
 import { rm, readdir, readFile } from "fs/promises";
 import { join } from "path";
@@ -12,17 +12,17 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
-  // Cleanup temp directories
+  // Cleanup temp directories with retry for Windows
   for (const dir of tempDirs) {
     if (existsSync(dir)) {
-      await rm(dir, { recursive: true, force: true });
+      try {
+        await rm(dir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+      } catch {
+        // Ignore cleanup errors on Windows
+      }
     }
   }
   tempDirs = [];
-});
-
-afterAll(async () => {
-  await cleanupFixtures();
 });
 
 describe("validateImage", () => {

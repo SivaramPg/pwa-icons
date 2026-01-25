@@ -1,13 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll } from "bun:test";
+import { describe, it, expect, beforeAll } from "bun:test";
 import { extractEdgeColor, isValidHexColor, normalizeHexColor } from "../../src/color";
-import { setupFixtures, FIXTURES, cleanupFixtures } from "../setup";
+import { setupFixtures, FIXTURES } from "../setup";
 
 beforeAll(async () => {
   await setupFixtures();
-});
-
-afterAll(async () => {
-  await cleanupFixtures();
 });
 
 describe("isValidHexColor", () => {

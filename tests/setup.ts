@@ -23,10 +23,22 @@ export const FIXTURES = {
   validWebp: join(FIXTURES_DIR, "valid-256.webp"),
 } as const;
 
+// Track if fixtures have been set up in this process
+let fixturesReady = false;
+
 /**
- * Generate all test fixtures
+ * Generate all test fixtures (skips if already created)
  */
 export async function setupFixtures(): Promise<void> {
+  // Skip if already set up in this process
+  if (fixturesReady) return;
+
+  // Skip if fixtures directory already exists with files
+  if (existsSync(FIXTURES.valid256)) {
+    fixturesReady = true;
+    return;
+  }
+
   await mkdir(FIXTURES_DIR, { recursive: true });
 
   // 256x256 white PNG
@@ -141,6 +153,8 @@ export async function setupFixtures(): Promise<void> {
   })
     .webp()
     .toFile(FIXTURES.validWebp);
+
+  fixturesReady = true;
 }
 
 /**
@@ -151,11 +165,41 @@ export function getTempOutputDir(): string {
 }
 
 /**
+ * Sleep helper for Windows file lock issues
+ */
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Retry rm with exponential backoff (Windows file locking workaround)
+ */
+async function rmWithRetry(path: string, maxRetries = 3): Promise<void> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await rm(path, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+      return;
+    } catch (err: unknown) {
+      const error = err as NodeJS.ErrnoException;
+      // EBUSY = file busy, ENOTEMPTY = dir not empty, EPERM = permission (Windows)
+      if (error.code === "EBUSY" || error.code === "ENOTEMPTY" || error.code === "EPERM") {
+        await sleep(100 * (i + 1)); // 100ms, 200ms, 300ms
+        continue;
+      }
+      throw err;
+    }
+  }
+  // Final attempt without catching
+  await rm(path, { recursive: true, force: true });
+}
+
+/**
  * Clean up all test fixtures and temp directories
  */
 export async function cleanupFixtures(): Promise<void> {
+  fixturesReady = false;
   if (existsSync(FIXTURES_DIR)) {
-    await rm(FIXTURES_DIR, { recursive: true, force: true });
+    await rmWithRetry(FIXTURES_DIR);
   }
 }
 
@@ -165,6 +209,6 @@ export async function cleanupFixtures(): Promise<void> {
 export async function cleanupAppImages(): Promise<void> {
   const appImagesDir = join(PROJECT_ROOT, "AppImages");
   if (existsSync(appImagesDir)) {
-    await rm(appImagesDir, { recursive: true, force: true });
+    await rmWithRetry(appImagesDir);
   }
 }
