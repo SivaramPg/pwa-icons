@@ -420,8 +420,10 @@ describe("generateIcons", () => {
       );
 
       expect(progressCalls.length).toBe(6);
-      expect(progressCalls[progressCalls.length - 1].current).toBe(6);
-      expect(progressCalls[progressCalls.length - 1].total).toBe(6);
+      const lastCall = progressCalls[progressCalls.length - 1];
+      expect(lastCall).toBeDefined();
+      expect(lastCall!.current).toBe(6);
+      expect(lastCall!.total).toBe(6);
     });
   });
 
