@@ -11,9 +11,7 @@ Built with [Bun](https://bun.sh), [Sharp](https://sharp.pixelplumbing.com/), and
 
 ## Demo
 
-![Demo](https://github.com/user-attachments/assets/321f2481-8199-49d4-b200-b7ced02fd1eb)
-
-[Watch full video](https://github.com/user-attachments/assets/6a527cc1-34da-4422-8639-5cfaaadadcd7)
+https://github.com/user-attachments/assets/6a527cc1-34da-4422-8639-5cfaaadadcd7
 
 ## Features
 

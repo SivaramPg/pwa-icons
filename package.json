@@ -1,6 +1,6 @@
 {
   "name": "pwa-icons",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Fast, interactive CLI to generate PWA icons for iOS, Android, Windows 11 and favicons from a single source image",
   "type": "module",
   "main": "dist/index.js",
