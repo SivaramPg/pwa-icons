@@ -29,12 +29,21 @@ bun run start -i logo.png -o ./icons -y
 ### From npm (recommended)
 
 ```bash
-# Use directly with npx
+# npm
 npx pwa-icons
-
-# Or install globally
 npm install -g pwa-icons
-pwa-icons
+
+# yarn
+yarn dlx pwa-icons
+yarn global add pwa-icons
+
+# pnpm
+pnpm dlx pwa-icons
+pnpm add -g pwa-icons
+
+# bun
+bunx pwa-icons
+bun add -g pwa-icons
 ```
 
 ### From source
@@ -99,6 +108,59 @@ bun run start \
 | `-b, --background <color>` | `edge`, `transparent`, or hex color | `edge` |
 | `--optimization <level>` | `none`, `light`, `heavy` | `light` |
 | `-y, --yes` | Skip confirmation prompts | `false` |
+
+## Advanced Usage
+
+### CI/CD Pipeline
+
+Generate icons in a GitHub Actions workflow:
+
+```yaml
+- name: Generate PWA Icons
+  run: npx pwa-icons -i ./src/logo.png -o ./public/icons -y
+```
+
+### Generate Only Favicons
+
+```bash
+npx pwa-icons -i logo.png -p favicon -y
+```
+
+### Maximum Compression (WebP)
+
+```bash
+npx pwa-icons -i logo.png -f webp --optimization heavy -y
+```
+
+### Transparent Background (for PNG/WebP/AVIF)
+
+```bash
+npx pwa-icons -i logo.png -b transparent -f png -y
+```
+
+### Custom Brand Color Background
+
+```bash
+npx pwa-icons -i logo.png -b "#1a1a2e" -y
+```
+
+### No Padding (Icon Fills Entire Canvas)
+
+```bash
+npx pwa-icons -i logo.png --padding 0 -y
+```
+
+### iOS + Android Only (Skip Windows)
+
+```bash
+npx pwa-icons -i logo.png -p ios,android -y
+```
+
+### All Platforms Including Favicon
+
+```bash
+npx pwa-icons -i logo.png -p ios,android,windows11,favicon -y
+```
 
 ## Supported Formats
 
