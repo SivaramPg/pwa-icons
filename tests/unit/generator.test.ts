@@ -27,11 +27,11 @@ afterEach(async () => {
 
 describe("validateImage", () => {
   describe("valid images", () => {
-    it("accepts real project logo (1023x1023)", async () => {
+    it("accepts real project logo (512x512)", async () => {
       const result = await validateImage(FIXTURES.logo);
       expect(result.valid).toBe(true);
-      expect(result.width).toBe(1023);
-      expect(result.height).toBe(1023);
+      expect(result.width).toBe(512);
+      expect(result.height).toBe(512);
       expect(result.format).toBe("png");
     });
 

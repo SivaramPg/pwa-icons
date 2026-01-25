@@ -10,8 +10,8 @@ export const FIXTURES_DIR = join(import.meta.dir, "fixtures");
 export const PROJECT_ROOT = join(import.meta.dir, "..");
 
 export const FIXTURES = {
-  // Real logo from project (1024x1024)
-  logo: join(PROJECT_ROOT, "logo.png"),
+  // Sample logo from project (512x512)
+  logo: join(PROJECT_ROOT, "sample-logo.png"),
   // Generated test fixtures
   valid256: join(FIXTURES_DIR, "valid-256.png"),
   valid512: join(FIXTURES_DIR, "valid-512.png"),
