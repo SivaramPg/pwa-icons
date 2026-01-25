@@ -18,7 +18,11 @@
     "dev": "bun run --watch src/index.ts",
     "build": "tsup",
     "prepublishOnly": "bun run build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage",
+    "prepare": "lefthook install"
   },
   "keywords": [
     "pwa",
@@ -53,6 +57,7 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^22.0.0",
+    "lefthook": "^2.0.15",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },

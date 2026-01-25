@@ -1,0 +1,12 @@
+# Lefthook config - https://lefthook.dev/configuration/
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: typecheck
+      run: bun run typecheck
+      fail_text: "Type check failed - fix errors before pushing"
+
+    - name: test
+      run: bun test
+      fail_text: "Tests failed - fix failing tests before pushing"

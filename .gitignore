@@ -11,6 +11,9 @@ dist
 test-output
 test-*
 
+# test fixtures (generated at runtime)
+tests/fixtures
+
 # code coverage
 coverage
 *.lcov

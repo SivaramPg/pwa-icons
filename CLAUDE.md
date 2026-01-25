@@ -36,9 +36,31 @@ src/
 ## Testing
 
 ```bash
+bun test              # Run all tests (86 tests)
+bun test --watch      # Watch mode
+bun test --coverage   # Coverage report
+```
+
+### Manual Testing
+
+```bash
 # Quick test
 bun run start -i logo.png -o test-output -p ios -y
 
 # Full test (all platforms)
 bun run start -i logo.png -o test-output -y
+```
+
+### Test Structure
+
+```
+tests/
+  setup.ts              # Fixture generation (test images)
+  fixtures/             # Generated test images
+  unit/
+    color.test.ts       # 12 tests
+    generator.test.ts   # 20 tests
+    platforms.test.ts   # 8 tests
+  integration/
+    cli.test.ts         # 15 tests
 ```

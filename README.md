@@ -1,5 +1,7 @@
 # pwa-icons
 
+[![CI](https://github.com/SivaramPg/pwa-icons/actions/workflows/ci.yml/badge.svg)](https://github.com/SivaramPg/pwa-icons/actions/workflows/ci.yml)
+
 A fast, interactive CLI to generate PWA icons for **iOS**, **Android**, **Windows 11**, and **favicons** from a single source image.
 
 Built with [Bun](https://bun.sh), [Sharp](https://sharp.pixelplumbing.com/), and [@clack/prompts](https://github.com/natemoo-re/clack).
@@ -331,6 +333,18 @@ Covers: iPhone, iPad, App Store, Spotlight, Settings
 - 10 concurrent operations via [p-limit](https://github.com/sindresorhus/p-limit)
 - Source image processed once, buffer reused
 - [Sharp](https://sharp.pixelplumbing.com/) (libvips) for native-speed processing
+
+## Test Coverage
+
+| Metric | Coverage |
+|--------|----------|
+| Functions | 100% |
+| Lines | 99.33% |
+| Tests | 92 |
+
+```bash
+bun test --coverage
+```
 
 ## Requirements
 
