@@ -13,7 +13,7 @@ import {
   type OptimizationLevel,
 } from "./types";
 
-const version = "1.0.0";
+const version = "1.0.2";
 
 interface CliOptions {
   input?: string;
@@ -74,6 +74,7 @@ async function main(options: CliOptions) {
     const inputResult = await p.text({
       message: `Path to your source image`,
       placeholder: "./logo.png",
+      defaultValue: "./logo.png",
       validate: (value) => {
         if (!value) return "Please enter a path";
         const resolved = resolve(value);

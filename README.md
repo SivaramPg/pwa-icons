@@ -290,7 +290,7 @@ Create a standalone executable:
 
 ```bash
 bun run build
-./dist/pwa-asset-generator -i logo.png -y
+./dist/pwa-icons -i logo.png -y
 ```
 
 ## Tech Stack
