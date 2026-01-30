@@ -174,6 +174,7 @@ async function main(options: CliOptions) {
       placeholder: "0.3",
       defaultValue: "0.3",
       validate: (value) => {
+        if (!value) return "Please enter a value";
         const num = parseFloat(value);
         if (isNaN(num) || num < 0 || num > 1) {
           return "Please enter a number between 0 and 1";
@@ -228,6 +229,7 @@ async function main(options: CliOptions) {
         message: "Enter hex color",
         placeholder: "#ffffff",
         validate: (value) => {
+          if (!value) return "Please enter a color";
           const normalized = normalizeHexColor(value);
           if (!isValidHexColor(normalized)) {
             return "Please enter a valid hex color (e.g., #ff0000 or #f00)";
