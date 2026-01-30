@@ -45,7 +45,7 @@ describe("CLI", () => {
     it("--version outputs version number", async () => {
       const { stdout, exitCode } = await runCli(["--version"]);
       expect(exitCode).toBe(0);
-      expect(stdout.trim()).toBe("1.1.0");
+      expect(stdout.trim()).toBe("1.1.3");
     });
 
     it("--help shows usage information", async () => {
