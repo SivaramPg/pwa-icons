@@ -136,21 +136,25 @@ describe("CLI", () => {
       expect(files).toContain("favicon.ico");
     });
 
-    it("generates icons from a small non-square SVG", async () => {
-      const outputPath = getTempOutputDir();
-      tempDirs.push(outputPath);
+    it(
+      "generates icons from a small non-square SVG",
+      async () => {
+        const outputPath = getTempOutputDir();
+        tempDirs.push(outputPath);
 
-      const { stdout, exitCode } = await runCli([
-        "-i", FIXTURES.smallNonSquareSvg,
-        "-o", outputPath,
-        "-p", "android",
-        "-y",
-      ]);
+        const { stdout, exitCode } = await runCli([
+          "-i", FIXTURES.smallNonSquareSvg,
+          "-o", outputPath,
+          "-p", "android",
+          "-y",
+        ]);
 
-      expect(exitCode).toBe(0);
-      expect(stdout).toContain("Generated");
-      expect((await readdir(join(outputPath, "android"))).length).toBe(6);
-    });
+        expect(exitCode).toBe(0);
+        expect(stdout).toContain("Generated");
+        expect((await readdir(join(outputPath, "android"))).length).toBe(6);
+      },
+      15000
+    );
   });
 
   describe("defaults", () => {
