@@ -1,7 +1,8 @@
 import sharp, { type Sharp, type PngOptions, type JpegOptions, type WebpOptions, type AvifOptions } from "sharp";
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import { join, extname } from "path";
 import pLimit from "p-limit";
+import { Resvg } from "@resvg/resvg-js";
 import { extractEdgeColor } from "./color";
 import { iosConfig } from "./platforms/ios";
 import { androidConfig } from "./platforms/android";
@@ -103,30 +104,51 @@ export async function generateIcons(
   const { inputPath, outputPath, platforms, padding, backgroundColor, outputFormat, optimization } =
     options;
 
-  // Resolve background color
+  // Render SVGs large enough for the biggest requested icon before reusing the source buffer.
+  const inputMetadata = await sharp(inputPath).metadata();
+  const isSvg = inputMetadata.format === "svg";
+  const maxOutputDimension = platforms.reduce((max, platform) => {
+    const platformMax = platformConfigs[platform].icons.reduce(
+      (iconMax, icon) => Math.max(iconMax, icon.width, icon.height),
+      0
+    );
+    return Math.max(max, platformMax);
+  }, 0);
+
+  let sourceBuffer: Buffer;
+  if (isSvg) {
+    const width = inputMetadata.width ?? 1;
+    const height = inputMetadata.height ?? 1;
+    const fitTo =
+      width >= height
+        ? { mode: "width" as const, value: Math.max(1, maxOutputDimension) }
+        : { mode: "height" as const, value: Math.max(1, maxOutputDimension) };
+    const renderer = new Resvg(await readFile(inputPath), { fitTo });
+    sourceBuffer = renderer.render().asPng();
+  } else {
+    let sourceSharp = sharp(inputPath);
+
+    // Apply light preprocessing to raster sources.
+    if (optimization !== "none") {
+      sourceSharp = sourceSharp
+        .rotate() // Auto-rotate based on EXIF
+        .withMetadata({ density: 72 }); // Normalize DPI
+    }
+
+    sourceBuffer = await sourceSharp.png().toBuffer();
+  }
+
+  // Resolve background color after SVGs have been rendered to a bounded size.
   let bgColor: { r: number; g: number; b: number; alpha: number } | undefined;
 
   if (backgroundColor === "transparent") {
     bgColor = { r: 0, g: 0, b: 0, alpha: 0 };
   } else if (backgroundColor === "edge") {
-    const hexColor = await extractEdgeColor(inputPath);
+    const hexColor = await extractEdgeColor(isSvg ? sourceBuffer : inputPath);
     bgColor = hexToRgb(hexColor);
   } else {
     bgColor = hexToRgb(backgroundColor);
   }
-
-  // Load and optimize source image once
-  // This removes metadata and ensures consistent processing
-  let sourceSharp = sharp(inputPath);
-
-  // Apply light preprocessing to source
-  if (optimization !== "none") {
-    sourceSharp = sourceSharp
-      .rotate() // Auto-rotate based on EXIF
-      .withMetadata({ density: 72 }); // Normalize DPI
-  }
-
-  const sourceBuffer = await sourceSharp.png().toBuffer();
 
   // Get file extension
   const ext = getExtension(outputFormat);
@@ -334,7 +356,9 @@ export async function validateImage(
       return { valid: false, error: "Could not read image dimensions" };
     }
 
-    if (metadata.width < 256 || metadata.height < 256) {
+    const isSvg = metadata.format === "svg";
+
+    if (!isSvg && (metadata.width < 256 || metadata.height < 256)) {
       return {
         valid: false,
         width: metadata.width,
@@ -344,7 +368,7 @@ export async function validateImage(
       };
     }
 
-    if (metadata.width !== metadata.height) {
+    if (!isSvg && metadata.width !== metadata.height) {
       return {
         valid: false,
         width: metadata.width,

@@ -4,6 +4,7 @@ import { setupFixtures, FIXTURES, getTempOutputDir } from "../setup";
 import { existsSync } from "fs";
 import { rm, readdir, readFile } from "fs/promises";
 import { join } from "path";
+import sharp from "sharp";
 
 let tempDirs: string[] = [];
 
@@ -61,6 +62,14 @@ describe("validateImage", () => {
       expect(result.valid).toBe(true);
       expect(result.format).toBe("webp");
     });
+
+    it("accepts small non-square SVG images", async () => {
+      const result = await validateImage(FIXTURES.smallNonSquareSvg);
+      expect(result.valid).toBe(true);
+      expect(result.width).toBe(95);
+      expect(result.height).toBe(77);
+      expect(result.format).toBe("svg");
+    });
   });
 
   describe("invalid images", () => {
@@ -88,6 +97,13 @@ describe("validateImage", () => {
       const result = await validateImage("/some/image.bmp");
       expect(result.valid).toBe(false);
       expect(result.error).toContain("Unsupported format");
+    });
+
+    it("applies raster rules to raster content named with an SVG extension", async () => {
+      const result = await validateImage(FIXTURES.rasterNamedSvg);
+      expect(result.valid).toBe(false);
+      expect(result.format).toBe("png");
+      expect(result.error).toContain("must be square");
     });
   });
 });
@@ -206,6 +222,35 @@ describe("generateIcons", () => {
   });
 
   describe("real-world logo tests", () => {
+    it("preserves fine detail when scaling a tiny SVG", async () => {
+      const outputPath = getTempOutputDir();
+      tempDirs.push(outputPath);
+
+      await generateIcons({
+        inputPath: FIXTURES.tinyDetailedSvg,
+        outputPath,
+        platforms: ["ios"],
+        padding: 0,
+        backgroundColor: "transparent",
+        outputFormat: "png",
+        optimization: "none",
+      });
+
+      const { data, info } = await sharp(join(outputPath, "ios", "1024.png"))
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const rowOffset = Math.floor(info.height / 2) * info.width * info.channels;
+      let transitions = 0;
+
+      for (let x = 1; x < info.width; x++) {
+        const previous = (data[rowOffset + (x - 1) * info.channels] ?? 0) > 127;
+        const current = (data[rowOffset + x * info.channels] ?? 0) > 127;
+        if (previous !== current) transitions++;
+      }
+
+      expect(transitions).toBeGreaterThan(700);
+    });
+
     it("generates all platforms from real logo with edge detection", async () => {
       const outputPath = getTempOutputDir();
       tempDirs.push(outputPath);

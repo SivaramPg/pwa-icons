@@ -57,7 +57,7 @@ bun add -g pwa-icons
 
 ### From source
 
-Prerequisites: [Bun](https://bun.sh) v1.0.0+ or [Node.js](https://nodejs.org) v18+
+Prerequisite: [Bun](https://bun.sh) v1.0.0+
 
 ```bash
 # Clone the repo
@@ -65,10 +65,10 @@ git clone https://github.com/SivaramPg/pwa-icons.git
 cd pwa-icons
 
 # Install dependencies
-bun install  # or: npm install
+bun install
 
 # Run
-bun run start  # or: npm start
+bun run start
 ```
 
 ## Usage
@@ -83,7 +83,7 @@ bun run start
 
 You'll be prompted for:
 
-1. **Source image path** — Must be square, minimum 256×256px
+1. **Source image path** — Raster images must be square and at least 256×256px; SVGs have no minimum or square requirement
 2. **Output directory** — Default: `./AppImages`
 3. **Platforms** — iOS, Android, Windows 11 (multi-select)
 4. **Output format** — PNG, WebP, AVIF, or JPEG
@@ -356,7 +356,9 @@ bun test --coverage
 ## Requirements
 
 - **Bun** v1.0.0+
-- **Source image**: Square, minimum 256×256px (512×512+ recommended)
+- **Node.js** v22.12.0+
+- **Raster source image**: Square, minimum 256×256px (512×512+ recommended)
+- **SVG source image**: No minimum dimensions or square requirement
 
 ## Scripts
 

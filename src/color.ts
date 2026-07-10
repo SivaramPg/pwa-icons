@@ -11,8 +11,8 @@ interface RGB {
  * This is smarter than "dominant color" - it samples the actual borders
  * so we can naturally extend the image's edge appearance.
  */
-export async function extractEdgeColor(imagePath: string): Promise<string> {
-  const image = sharp(imagePath);
+export async function extractEdgeColor(imageInput: string | Buffer): Promise<string> {
+  const image = sharp(imageInput);
   const metadata = await image.metadata();
 
   if (!metadata.width || !metadata.height) {
@@ -35,7 +35,7 @@ export async function extractEdgeColor(imagePath: string): Promise<string> {
   ];
 
   for (const region of edges) {
-    const { data, info } = await sharp(imagePath)
+    const { data, info } = await sharp(imageInput)
       .extract(region)
       .raw()
       .toBuffer({ resolveWithObject: true });

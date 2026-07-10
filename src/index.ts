@@ -13,7 +13,7 @@ import {
   type OptimizationLevel,
 } from "./types";
 
-const version = "1.1.3";
+const version = "2.0.0";
 
 interface CliOptions {
   input?: string;
@@ -30,7 +30,7 @@ program
   .name("pwa-asset-generator")
   .description("Generate PWA icons for iOS, Android, and Windows 11")
   .version(version)
-  .option("-i, --input <path>", "Path to source image (256x256 minimum, square)")
+  .option("-i, --input <path>", "Path to source image (raster: 256x256 minimum and square; SVG: no size restriction)")
   .option("-o, --output <path>", "Output directory (default: ./AppImages)")
   .option(
     "-p, --platforms <platforms>",

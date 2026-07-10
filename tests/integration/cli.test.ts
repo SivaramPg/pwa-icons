@@ -45,7 +45,7 @@ describe("CLI", () => {
     it("--version outputs version number", async () => {
       const { stdout, exitCode } = await runCli(["--version"]);
       expect(exitCode).toBe(0);
-      expect(stdout.trim()).toBe("1.1.3");
+      expect(stdout.trim()).toBe("2.0.0");
     });
 
     it("--help shows usage information", async () => {
@@ -134,6 +134,22 @@ describe("CLI", () => {
       const faviconDir = join(outputPath, "favicon");
       const files = await readdir(faviconDir);
       expect(files).toContain("favicon.ico");
+    });
+
+    it("generates icons from a small non-square SVG", async () => {
+      const outputPath = getTempOutputDir();
+      tempDirs.push(outputPath);
+
+      const { stdout, exitCode } = await runCli([
+        "-i", FIXTURES.smallNonSquareSvg,
+        "-o", outputPath,
+        "-p", "android",
+        "-y",
+      ]);
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("Generated");
+      expect((await readdir(join(outputPath, "android"))).length).toBe(6);
     });
   });
 

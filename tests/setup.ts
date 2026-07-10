@@ -2,7 +2,7 @@
  * Test fixture setup - generates test images using Sharp
  */
 import sharp from "sharp";
-import { mkdir, rm } from "fs/promises";
+import { copyFile, mkdir, rm, writeFile } from "fs/promises";
 import { join } from "path";
 import { existsSync } from "fs";
 
@@ -21,6 +21,9 @@ export const FIXTURES = {
   coloredEdges: join(FIXTURES_DIR, "colored-edges.png"),
   validJpg: join(FIXTURES_DIR, "valid-256.jpg"),
   validWebp: join(FIXTURES_DIR, "valid-256.webp"),
+  smallNonSquareSvg: join(FIXTURES_DIR, "small-non-square.svg"),
+  tinyDetailedSvg: join(FIXTURES_DIR, "tiny-detailed.svg"),
+  rasterNamedSvg: join(FIXTURES_DIR, "raster-named-svg.svg"),
 } as const;
 
 // Track if fixtures have been set up in this process
@@ -34,7 +37,12 @@ export async function setupFixtures(): Promise<void> {
   if (fixturesReady) return;
 
   // Skip if fixtures directory already exists with files
-  if (existsSync(FIXTURES.valid256)) {
+  if (
+    existsSync(FIXTURES.valid256) &&
+    existsSync(FIXTURES.smallNonSquareSvg) &&
+    existsSync(FIXTURES.tinyDetailedSvg) &&
+    existsSync(FIXTURES.rasterNamedSvg)
+  ) {
     fixturesReady = true;
     return;
   }
@@ -153,6 +161,24 @@ export async function setupFixtures(): Promise<void> {
   })
     .webp()
     .toFile(FIXTURES.validWebp);
+
+  // 95x77 SVG matching the dimensions reported in GitHub issue #1
+  await writeFile(
+    FIXTURES.smallNonSquareSvg,
+    '<svg xmlns="http://www.w3.org/2000/svg" width="95" height="77" viewBox="0 0 95 77"><rect width="95" height="77" fill="#663399"/><circle cx="47.5" cy="38.5" r="24" fill="#ffffff"/></svg>'
+  );
+
+  const stripes = Array.from(
+    { length: 800 },
+    (_, x) => `<rect x="${x}" width="1" height="800" fill="${x % 2 === 0 ? "#000" : "#fff"}"/>`
+  ).join("");
+  await writeFile(
+    FIXTURES.tinyDetailedSvg,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="0.5" height="0.5" viewBox="0 0 800 800">${stripes}</svg>`
+  );
+
+  // Raster content with an SVG extension must still follow raster validation rules.
+  await copyFile(FIXTURES.nonSquare, FIXTURES.rasterNamedSvg);
 
   fixturesReady = true;
 }
